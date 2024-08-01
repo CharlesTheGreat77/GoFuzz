@@ -57,7 +57,7 @@ Fuzz with POST Requests:
 ```
 * To FUZZ the body of the post, we can just use bash:
     ```bash
-    cat payloads.txt | while read payload; do ./gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6
+    cat payloads.txt | while read payload; do ./gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6; done
     ```
 
 # Coffee ☕️
