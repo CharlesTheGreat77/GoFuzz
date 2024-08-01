@@ -18,6 +18,8 @@ cd GoFuzz
 go mod init gofuzz
 go mod tidy
 go build -o gofuzz main.go
+sudo mv gofuzz /usr/local/bin
+gofuzz -h
 ```
 
 # Usage 🧠
