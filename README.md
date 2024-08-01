@@ -59,6 +59,11 @@ Fuzz with POST Requests:
     ```bash
     cat payloads.txt | while read payload; do ./gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6; done
     ```
+## Video Example
+[Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
+
+
+
 
 # Coffee ☕️
 If you enjoy this project or my other projects, It wouldn't hurt to grab me a <a href="https://buymeacoffee.com/doobthegoober">coffee</a>! 🙏
