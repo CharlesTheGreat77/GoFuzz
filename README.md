@@ -24,7 +24,7 @@ gofuzz -h
 
 # Usage 🧠
 ```
-Usage of ./gofuzz:
+Usage of gofuzz:
   -body string
         specify POST request body
   -custom-headers string
@@ -45,21 +45,21 @@ Usage of ./gofuzz:
 # Examples 🦫
 Fuzz for Paths:
 ```bash
-./gofuzz -url https://example.com/FUZZ -wordlist list.txt -custom-headers headers.txt
+gofuzz -url https://example.com/FUZZ -wordlist list.txt -custom-headers headers.txt
 ```
 
 Fuzz parameters in URL:
 ```bash
-./gofuzz -url https://example.com/api/search=FUZZ -timeout 3 -threads 10 -wordlist list.txt
+gofuzz -url https://example.com/api/search=FUZZ -timeout 3 -threads 10 -wordlist list.txt
 ```
 
 Fuzz with POST Requests:
 ```bash
-./gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "123456"}' -custom-headers headers.txt -timeout 6
+gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "123456"}' -custom-headers headers.txt -timeout 6
 ```
 * To FUZZ the body of the post, we can just use bash:
     ```bash
-    cat payloads.txt | while read payload; do ./gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6; done
+    cat payloads.txt | while read payload; do gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6; done
     ```
 ## Video Example
 [Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
