@@ -59,7 +59,7 @@ gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "1
 ```
 * To FUZZ the body of the post, we can just use bash:
     ```bash
-    cat payloads.txt | while read payload; do gofuzz -url https://example.com/api/upload -method POST -body $payload -custom-headers headers.txt -timeout 6; done
+    cat payloads.txt | while read payload; do gofuzz -url https://example.com/api/upload -method POST -body '{"payload": "$payload"}' -custom-headers headers.txt -timeout 6; done
     ```
 ## Video Example
 [Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
