@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"flag"
-	"fmt"
 	"gofuzz/internal/fuzzer"
 	"gofuzz/utils"
 	"log"
-	"os"
 	"strings"
 	"time"
 )
@@ -28,18 +26,15 @@ func Execute() {
 
 	time := time.Duration(*timeout) * time.Second
 
-	cwd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fuzzList, err := utils.ReadFile(fmt.Sprintf("%s/%s", cwd, *wordlist))
+	fuzzList, err := utils.ReadFile(*wordlist)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var customHeaders []string
 	if *headers != "" {
-		customHeaders, err = utils.ReadFile(fmt.Sprintf("%s/%s", cwd, *headers))
+		customHeaders, err = utils.ReadFile(*headers)
+
 		if err != nil {
 			log.Fatal(err)
 		}
