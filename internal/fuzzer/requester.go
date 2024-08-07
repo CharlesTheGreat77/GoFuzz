@@ -39,17 +39,22 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 			defer func() { <-semaphore }()
 
 			encodedWord := url.QueryEscape(word)
-			modifiedURL := strings.Replace(targetURL, "FUZZ", encodedWord, -1)
+			modifiedBody := strings.Replace(body, "FUZZ", encodedWord, -1)
 
-			req, err := http.NewRequest(method, modifiedURL, nil)
+			var req *http.Request
+			var err error
+			if method == "POST" {
+				req, err = http.NewRequest(method, targetURL, bytes.NewReader([]byte(modifiedBody)))
+				req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			} else {
+				modifiedURL := strings.Replace(targetURL, "FUZZ", encodedWord, -1)
+				req, err = http.NewRequest(method, modifiedURL, nil)
+			}
 			if err != nil {
-				fmt.Printf("Error creating request for %s: %v\n", modifiedURL, err)
+				fmt.Printf("Error creating request for %s: %v\n", targetURL, err)
 				return
 			}
 
-			if method == "POST" {
-				req.Body = io.NopCloser(bytes.NewReader([]byte(body)))
-			}
 			if len(headers) > 0 {
 				for _, line := range headers {
 					header := strings.TrimSpace(line)
@@ -59,19 +64,28 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 					}
 				}
 			}
+
+			// debugging request shii
+			// requestDump, err := httputil.DumpRequestOut(req, true)
+			// if err != nil {
+			// 	fmt.Printf("Error dumping request: %v\n", err)
+			// 	return
+			// }
+			// fmt.Printf("Full Request:\n%s\n", string(requestDump))
+
 			resp, err := client.Do(req)
 			if err != nil {
-				fmt.Printf("Error sending request to %s: %v\n", modifiedURL, err)
+				fmt.Printf("Error sending request to %s: %v\n", targetURL, err)
 				return
 			}
 			defer resp.Body.Close()
 
 			responseBody, err := io.ReadAll(resp.Body)
 			if err != nil {
-				fmt.Printf("Error reading response from %s: %v\n", modifiedURL, err)
+				fmt.Printf("Error reading response from %s: %v\n", targetURL, err)
 				return
 			}
-			fmt.Printf("URL: %s\nResponse Code: %d\nResponse Length: %d\n\n", resp.Request.URL, resp.StatusCode, len(responseBody))
+			fmt.Printf("URL: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", resp.Request.URL, resp.StatusCode, len(responseBody), modifiedBody)
 		}(word)
 	}
 	wg.Wait()
