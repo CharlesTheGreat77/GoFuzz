@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -39,6 +40,7 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 			defer func() { <-semaphore }()
 
 			encodedWord := url.QueryEscape(word)
+			modifiedURL := strings.Replace(targetURL, "FUZZ", encodedWord, -1)
 			modifiedBody := strings.Replace(body, "FUZZ", encodedWord, -1)
 
 			var req *http.Request
@@ -47,7 +49,6 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 				req, err = http.NewRequest(method, targetURL, bytes.NewReader([]byte(modifiedBody)))
 				req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 			} else {
-				modifiedURL := strings.Replace(targetURL, "FUZZ", encodedWord, -1)
 				req, err = http.NewRequest(method, modifiedURL, nil)
 			}
 			if err != nil {
