@@ -85,7 +85,15 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 				fmt.Printf("Error reading response from %s: %v\n", targetURL, err)
 				return
 			}
-			fmt.Printf("URL: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", resp.Request.URL, resp.StatusCode, len(responseBody), modifiedBody)
+
+			parsedURL, err := url.Parse(modifiedURL)
+			if err != nil {
+				log.Printf("Error parsing URL %s: %v\n", modifiedURL, err)
+				return
+			}
+			pathAndQuery := parsedURL.Path + parsedURL.RawQuery
+
+			fmt.Printf("Path: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, resp.StatusCode, len(responseBody), modifiedBody)
 		}(word)
 	}
 	wg.Wait()
