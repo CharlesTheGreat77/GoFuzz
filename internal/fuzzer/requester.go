@@ -14,7 +14,8 @@ import (
 	"time"
 )
 
-func GoRequest(method string, targetURL string, headers []string, body string, wordlist []string, maxConcurrentRequests int, timeout time.Duration) error {
+// function to fuzz the parameters in a given wordlist based on position in url or body
+func GoRequest(method string, targetURL string, customHeaders []string, body string, wordlist []string, maxConcurrentRequests int, timeout time.Duration) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSNextProto: make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
@@ -48,20 +49,27 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 			if method == "POST" {
 				req, err = http.NewRequest(method, targetURL, bytes.NewReader([]byte(modifiedBody)))
 				req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+				req.ContentLength = int64(len(modifiedBody))
 			} else {
 				req, err = http.NewRequest(method, modifiedURL, nil)
 			}
 			if err != nil {
-				fmt.Printf("Error creating request for %s: %v\n", targetURL, err)
+				log.Printf("Error creating request for %s: %v\n", targetURL, err)
+				return
+			}
+			if req == nil {
+				log.Printf("Error: Request is nil for %s\n", targetURL)
 				return
 			}
 
-			if len(headers) > 0 {
-				for _, line := range headers {
+			if len(customHeaders) > 0 {
+				for _, line := range customHeaders {
 					header := strings.TrimSpace(line)
 					splitHeader := strings.SplitN(header, ":", 2)
 					if len(splitHeader) == 2 {
 						req.Header.Set(splitHeader[0], splitHeader[1])
+					} else {
+						fmt.Printf("Invalid header format: %s\n", line)
 					}
 				}
 			}
@@ -79,7 +87,12 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 				fmt.Printf("Error sending request to %s: %v\n", targetURL, err)
 				return
 			}
-			defer resp.Body.Close()
+
+			defer func() {
+				if err := resp.Body.Close(); err != nil {
+					fmt.Printf("Error closing response body for %s: %v\n", targetURL, err)
+				}
+			}()
 
 			responseBody, err := io.ReadAll(resp.Body)
 			if err != nil {
@@ -98,6 +111,4 @@ func GoRequest(method string, targetURL string, headers []string, body string, w
 		}(word)
 	}
 	wg.Wait()
-
-	return nil
 }
