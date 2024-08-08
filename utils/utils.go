@@ -34,7 +34,6 @@ func ReadFile(path string) ([]string, error) {
 
 // function to parse burpsuite request dump
 func ParseBurpRequest(rawRequest string) (URL string, method string, headers []string, body string, err error) {
-	fmt.Println("reading request..")
 	reader := bufio.NewReader(strings.NewReader(rawRequest))
 	req, err := http.ReadRequest(reader)
 	if err != nil {
