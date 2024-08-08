@@ -5,14 +5,16 @@ import (
 	"gofuzz/internal/fuzzer"
 	"gofuzz/utils"
 	"log"
+	"strings"
 	"time"
 )
 
 func Execute() {
-	targetURL := flag.String("url", "", "specify the host url")
+	link := flag.String("url", "", "specify the host url")
+	burpsuite := flag.String("burp", "", "specify path to burp request")
 	wordlist := flag.String("wordlist", "", "specify a wordlist used to fuzz")
 	method := flag.String("method", "GET", "specify the request method [POST, GET]")
-	body := flag.String("body", "", "specify POST request body")
+	requestBody := flag.String("body", "", "specify POST request body")
 	headers := flag.String("custom-headers", "", "specify the file that contains headers [separated by line]")
 	threads := flag.Int("threads", 3, "specify thread count [default: 3]")
 	timeout := flag.Int("timeout", 5, "specify timeout in seconds [default 5]")
@@ -30,7 +32,23 @@ func Execute() {
 		log.Fatal(err)
 	}
 
+	targetURL := *link
 	var customHeaders []string
+	body := *requestBody
+	requestMethod := *method
+
+	if *burpsuite != "" {
+		request, err := utils.ReadFile(*burpsuite)
+		if err != nil {
+			log.Printf("[-] Error Occurred reading burp request file\n -> Error: %v\n", err)
+		}
+		rawRequest := strings.Join(request, "\n")
+		targetURL, requestMethod, customHeaders, body, err = utils.ParseBurpRequest(rawRequest)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	if *headers != "" {
 		customHeaders, err = utils.ReadFile(*headers)
 		if err != nil {
@@ -38,11 +56,11 @@ func Execute() {
 		}
 	}
 
-	err = fuzzer.GoRequest(
-		*method,
-		*targetURL,
+	fuzzer.GoRequest(
+		requestMethod,
+		targetURL,
 		customHeaders,
-		*body,
+		body,
 		fuzzList,
 		*threads,
 		timeoutDuration)
