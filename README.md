@@ -66,7 +66,7 @@ gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "1
 
 Filter by status code(s):
 ```bash
-gofuzz -url https://example.com/FUZZ -wordlist list.txt | grep -e " 200 " -e " 404 " -A 2
+gofuzz -url https://example.com/FUZZ -wordlist list.txt | grep -E " 200 | 400 " -A 2
 ```
 * **-A** *after-content*, gives the 2 lines after the match. *(Response Length, Response Body)*
 
