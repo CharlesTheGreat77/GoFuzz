@@ -63,6 +63,13 @@ gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "1
     ```bash
     gofuzz -url https://example.com/api/upload -method POST -body '{"payload": "FUZZ"}' -custom-headers headers.txt -wordlist list.txt
     ```
+
+Filter by status code(s):
+```bash
+gofuzz -url https://example.com/FUZZ -wordlist list.txt | grep -e " 200 " -e " 404 " -A 2
+```
+* **-A** *after-content*, gives the 2 lines after the match. *(Response Length, Response Body)*
+
 BurpSuite Requests:
 One can copy and paste http requests to fuzz/intruder your hacking adventures.
 ```bash
