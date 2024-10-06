@@ -26,22 +26,24 @@ gofuzz -h
 ```
 Usage of gofuzz:
   -body string
-        specify POST request body
+    	specify POST request body
   -burp string
-        specify path to burp request
+    	specify path to burp request
   -custom-headers string
-        specify the file that contains headers [separated by line]
-  -h    show usage
+    	specify the file that contains headers [separated by line]
+  -h	show usage
   -method string
-        specify the request method [POST, GET] (default "GET")
+    	specify the request method [POST, GET] (default "GET")
+  -statuscode string
+    	specify a status code(s) to output
   -threads int
-        specify thread count [default: 3] (default 3)
+    	specify thread count [default: 3] (default 3)
   -timeout int
-        specify timeout in seconds [default 5] (default 5)
+    	specify timeout in seconds [default 5] (default 5)
   -url string
-        specify the host url
+    	specify the host url
   -wordlist string
-        specify a wordlist used to fuzz
+    	specify a wordlist used to fuzz
 ```
 
 # Examples 🦫
