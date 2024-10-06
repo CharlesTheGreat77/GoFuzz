@@ -17,6 +17,7 @@ func Execute() {
 	requestBody := flag.String("body", "", "specify POST request body")
 	headers := flag.String("custom-headers", "", "specify the file that contains headers [separated by line]")
 	threads := flag.Int("threads", 3, "specify thread count [default: 3]")
+	statusCode := flag.String("statuscode", "", "specify a status code(s) to output")
 	timeout := flag.Int("timeout", 5, "specify timeout in seconds [default 5]")
 	help := flag.Bool("h", false, "show usage")
 	flag.Parse()
@@ -56,6 +57,11 @@ func Execute() {
 		}
 	}
 
+	var statuscodeSplit []string
+	if *statusCode != "" {
+		statuscodeSplit = strings.Split(*statusCode, ",")
+	}
+
 	fuzzer.GoRequest(
 		requestMethod,
 		targetURL,
@@ -63,7 +69,8 @@ func Execute() {
 		body,
 		fuzzList,
 		*threads,
-		timeoutDuration)
+		timeoutDuration,
+		statuscodeSplit)
 	if err != nil {
 		log.Printf("Error Occurred Sending Request\n -> Error: %v\n", err)
 	}

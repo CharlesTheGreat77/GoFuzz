@@ -15,7 +15,7 @@ import (
 )
 
 // function to fuzz the parameters in a given wordlist based on position in url or body
-func GoRequest(method string, targetURL string, customHeaders []string, body string, wordlist []string, maxConcurrentRequests int, timeout time.Duration) {
+func GoRequest(method string, targetURL string, customHeaders []string, body string, wordlist []string, maxConcurrentRequests int, timeout time.Duration, statusCodes []string) {
 	client := &http.Client{
 		Transport: &http.Transport{
 			TLSNextProto: make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
@@ -107,7 +107,16 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 			}
 			pathAndQuery := parsedURL.Path + parsedURL.RawQuery
 
-			fmt.Printf("Path: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, resp.StatusCode, len(responseBody), modifiedBody)
+			if len(statusCodes) != 0 {
+				sc := fmt.Sprintf("%d", resp.StatusCode)
+				for _, code := range statusCodes {
+					if string(code) == string(sc) {
+						fmt.Printf("Path: %s\tResponse Code: %s\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, sc, len(responseBody), modifiedBody)
+					}
+				}
+			} else {
+				fmt.Printf("Path: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, resp.StatusCode, len(responseBody), modifiedBody)
+			}
 		}(word)
 	}
 	wg.Wait()
