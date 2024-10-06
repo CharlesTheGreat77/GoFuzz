@@ -70,7 +70,6 @@ Filter by status code(s):
 ```bash
 gofuzz -url https://example.com/FUZZ -wordlist list.txt -sc 500,200,403,303
 ```
-* **-A** *after-content*, gives the 2 lines after the match. *(Response Length, Response Body)*
 
 BurpSuite Requests:
 One can copy and paste http requests to fuzz/intruder your hacking adventures.
