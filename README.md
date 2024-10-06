@@ -68,7 +68,7 @@ gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "1
 
 Filter by status code(s):
 ```bash
-gofuzz -url https://example.com/FUZZ -wordlist list.txt -sc 500,200,403,303
+gofuzz -url https://example.com/FUZZ -wordlist list.txt -statuscode 500,200,403,303
 ```
 
 BurpSuite Requests:
