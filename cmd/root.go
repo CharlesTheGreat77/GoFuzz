@@ -30,11 +30,12 @@ func Execute() {
 
 	fuzzList, err := utils.ReadFile(*wordlist)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("[-] Error Occurred reading wordlist file\n -> Error: %v\n", err)
 	}
 
 	targetURL := *link
 	var customHeaders []string
+	var body string
 	requestMethod := *method
 
 	if *burpsuite != "" {
@@ -43,7 +44,7 @@ func Execute() {
 			log.Printf("[-] Error Occurred reading burp request file\n -> Error: %v\n", err)
 		}
 		rawRequest := strings.Join(request, "\n")
-		targetURL, requestMethod, customHeaders, *requestBody, err = utils.ParseBurpRequest(rawRequest)
+		targetURL, requestMethod, customHeaders, body, err = utils.ParseBurpRequest(rawRequest)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -52,7 +53,7 @@ func Execute() {
 	if *headers != "" {
 		customHeaders, err = utils.ReadFile(*headers)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("[-] Error Occurred reading headers file\n -> Error: %v\n", err)
 		}
 	}
 
@@ -64,7 +65,7 @@ func Execute() {
 	if *requestBody != "" {
 		contents, err := utils.ReadFile(*requestBody)
 		if err == nil { // get contents of file for body
-			*requestBody = strings.Join(contents, "\n")
+			body = strings.Join(contents, "\n")
 		}
 	}
 
@@ -72,12 +73,9 @@ func Execute() {
 		requestMethod,
 		targetURL,
 		customHeaders,
-		*requestBody,
+		body,
 		fuzzList,
 		*threads,
 		timeoutDuration,
 		statuscodeSplit)
-	if err != nil {
-		log.Printf("Error Occurred Sending Request\n -> Error: %v\n", err)
-	}
 }
