@@ -66,6 +66,7 @@ gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "1
     ```bash
     gofuzz -url https://example.com/api/upload -method POST -body '{"payload": "FUZZ"}' -custom-headers headers.txt -wordlist list.txt
     ```
+    * specify a file containing the body ```-body body.json/txt/ etc.```
 
 Filter by status code(s):
 ```bash
