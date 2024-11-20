@@ -35,7 +35,6 @@ func Execute() {
 
 	targetURL := *link
 	var customHeaders []string
-	body := *requestBody
 	requestMethod := *method
 
 	if *burpsuite != "" {
@@ -44,7 +43,7 @@ func Execute() {
 			log.Printf("[-] Error Occurred reading burp request file\n -> Error: %v\n", err)
 		}
 		rawRequest := strings.Join(request, "\n")
-		targetURL, requestMethod, customHeaders, body, err = utils.ParseBurpRequest(rawRequest)
+		targetURL, requestMethod, customHeaders, *requestBody, err = utils.ParseBurpRequest(rawRequest)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -62,11 +61,18 @@ func Execute() {
 		statuscodeSplit = strings.Split(*statusCode, ",")
 	}
 
+	if *requestBody != "" {
+		contents, err := utils.ReadFile(*requestBody)
+		if err == nil { // get contents of file for body
+			*requestBody = strings.Join(contents, "\n")
+		}
+	}
+
 	fuzzer.GoRequest(
 		requestMethod,
 		targetURL,
 		customHeaders,
-		body,
+		*requestBody,
 		fuzzList,
 		*threads,
 		timeoutDuration,
