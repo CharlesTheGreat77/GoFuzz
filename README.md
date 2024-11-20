@@ -23,10 +23,11 @@ gofuzz -h
 ```
 
 # Usage 🧠
-```
+```bash
+gofuzz -h
 Usage of gofuzz:
   -body string
-    	specify POST request body
+    	specify POST request body (or file containing the body)
   -burp string
     	specify path to burp request
   -custom-headers string
