@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 	"sync"
@@ -44,7 +45,7 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 			// replace FUZZ for each line
 			encodedWord := url.QueryEscape(word) // URL encode
 			modifiedURL := strings.Replace(targetURL, "FUZZ", encodedWord, -1)
-			modifiedBody := strings.Replace(body, "FUZZ", encodedWord, -1)
+			modifiedBody := strings.Replace(body, "FUZZ", word, -1)
 
 			var req *http.Request
 			var err error
@@ -61,16 +62,18 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 			}
 
 			if len(customHeaders) > 0 { // if custom headers were set, replace FUZZ in corresponding section
-				for _, line := range customHeaders {
+				updatedHeaders := strings.Join(customHeaders, "\n")
+				updatedHeaders = strings.Replace(updatedHeaders, "FUZZ", word, -1) // globally replace FUZZ words in headers
+				headers := strings.Split(updatedHeaders, "\n")
+				for _, line := range headers {
 					header := strings.TrimSpace(line)
 					splitHeader := strings.SplitN(header, ":", 2)
 					if len(splitHeader) == 2 {
-						// replace FUZZ in header
 						key := strings.TrimSpace(splitHeader[0])
-						value := strings.Replace(strings.TrimSpace(splitHeader[0]), "FUZZ", word, -1)
+						value := strings.TrimSpace(splitHeader[1])
 						req.Header.Set(key, value)
 					} else {
-						fmt.Printf("Invalid header format: %s\n", line)
+						log.Fatalf("Invalid header format: %s\n", line)
 					}
 				}
 			}
@@ -78,8 +81,8 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 			// debugging request shii for each request sent
 			// requestDump, err := httputil.DumpRequestOut(req, true)
 			// if err != nil {
-			// 	fmt.Printf("Error dumping request: %v\n", err)
-			// 	return
+			//	fmt.Printf("Error dumping request: %v\n", err)
+			//	return
 			// }
 			// fmt.Printf("Full Request:\n%s\n", string(requestDump))
 
