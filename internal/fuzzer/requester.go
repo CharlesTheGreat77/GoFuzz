@@ -112,10 +112,12 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 				for _, code := range statusCodes {
 					if string(code) == string(sc) {
 						fmt.Printf("Path: %-40s [%s] Length: %-10d\n", pathAndQuery, sc, len(responseBody))
+						fmt.Printf("Request Body: %-40s\n\n", modifiedBody) // incase one is fuzzing via POST req.
 					}
 				}
 			} else if resp.StatusCode != 404 { // ignore 404 responses
 				fmt.Printf("Path: %-40s [%d] Length: %-10d\n", pathAndQuery, resp.StatusCode, len(responseBody))
+				fmt.Printf("Request Body: %-40s\n\n", modifiedBody)
 
 			}
 		}(word)
