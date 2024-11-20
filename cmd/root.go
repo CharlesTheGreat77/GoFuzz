@@ -14,7 +14,7 @@ func Execute() {
 	burpsuite := flag.String("burp", "", "specify path to burp request")
 	wordlist := flag.String("wordlist", "", "specify a wordlist used to fuzz")
 	method := flag.String("method", "GET", "specify the request method [POST, GET]")
-	requestBody := flag.String("body", "", "specify POST request body")
+	requestBody := flag.String("body", "", "specify POST request body (or file containing the body)")
 	headers := flag.String("custom-headers", "", "specify the file that contains headers [separated by line]")
 	threads := flag.Int("threads", 3, "specify thread count [default: 3]")
 	statusCode := flag.String("statuscode", "", "specify a status code(s) to output")
