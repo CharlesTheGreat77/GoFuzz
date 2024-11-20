@@ -111,11 +111,12 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 				sc := fmt.Sprintf("%d", resp.StatusCode)
 				for _, code := range statusCodes {
 					if string(code) == string(sc) {
-						fmt.Printf("Path: %s\tResponse Code: %s\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, sc, len(responseBody), modifiedBody)
+						fmt.Printf("Path: %-40s [%s] Length: %-10d\n", pathAndQuery, sc, len(responseBody))
 					}
 				}
-			} else {
-				fmt.Printf("Path: %s\tResponse Code: %d\nResponse Length: %d\nRequest Body: %s\n\n", pathAndQuery, resp.StatusCode, len(responseBody), modifiedBody)
+			} else if resp.StatusCode != 404 { // ignore 404 responses
+				fmt.Printf("Path: %-40s [%d] Length: %-10d\n", pathAndQuery, resp.StatusCode, len(responseBody))
+
 			}
 		}(word)
 	}
