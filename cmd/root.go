@@ -10,14 +10,15 @@ import (
 )
 
 func Execute() {
-	link := flag.String("url", "", "specify the host url")
+	link := flag.String("u", "", "specify the host url")
 	burpsuite := flag.String("burp", "", "specify path to burp request")
-	wordlist := flag.String("wordlist", "", "specify a wordlist used to fuzz")
+	wordlist := flag.String("w", "", "specify a wordlist used to fuzz")
 	method := flag.String("method", "GET", "specify the request method [POST, GET]")
 	requestBody := flag.String("body", "", "specify POST request body (or file containing the body)")
-	headers := flag.String("custom-headers", "", "specify the file that contains headers [separated by line]")
-	threads := flag.Int("threads", 3, "specify thread count [default: 3]")
-	statusCode := flag.String("statuscode", "", "specify a status code(s) to output")
+	headers := flag.String("H", "", "specify the file that contains headers [separated by line]")
+	search := flag.String("s", "", "specify a string to search for in response body 'Login Successful'")
+	threads := flag.Int("t", 3, "specify thread count [default: 3]")
+	statusCode := flag.String("sc", "", "specify a status code(s) to output")
 	timeout := flag.Int("timeout", 5, "specify timeout in seconds [default 5]")
 	help := flag.Bool("h", false, "show usage")
 	flag.Parse()
@@ -75,6 +76,7 @@ func Execute() {
 		customHeaders,
 		body,
 		fuzzList,
+		*search,
 		*threads,
 		timeoutDuration,
 		statuscodeSplit)
