@@ -121,11 +121,11 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 				sc := fmt.Sprintf("%d", resp.StatusCode)
 				for _, code := range statusCodes {
 					if string(code) == sc {
-						requestOutput(pathAndQuery, search, sc, string(responseBody), modifiedBody) // Ensure this call is correct
+						requestOutput(pathAndQuery, search, sc, string(responseBody), modifiedBody) 
 					}
 				}
 			} else if resp.StatusCode != 404 { // Ignore 404 responses
-				requestOutput(pathAndQuery, search, fmt.Sprintf("%d", resp.StatusCode), string(responseBody), modifiedBody) // Ensure this call is correct
+				requestOutput(pathAndQuery, search, fmt.Sprintf("%d", resp.StatusCode), string(responseBody), modifiedBody)
 			}
 		}(word)
 	}
