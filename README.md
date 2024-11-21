@@ -1,113 +1,110 @@
 # GoFuzz
-
 <div align="center">
-
-  <img src="assets/logo.png" alt="logo" width="auto" height="auto" />
-  <h1>GoFuzz</h1>
+  <img src="assets/logo.png" alt="GoFuzz Logo" width="200" />
+  <h1><strong>GoFuzz</strong></h1>
+  <p>⚡ The lightweight, fast, and concurrent fuzzing tool for web application testing ⚡</p>
 </div>
-GoFuzz is a concurrent fuzzer written in go to assist in fuzzing parameters for web application testing. This project is inspired by <a href="https://github.com/xmendez/wfuzz">wfuzz</a>. It is by all means no replacement, but great for lightweight fuzzing.
 
-# Install 🚀
-| Prerequisite | Version |
-|--------------|---------|
-| Go           |  <=1.22 |
 
-```bash
-git clone https://github.com/CharlesTheGreat77/GoFuzz
-cd GoFuzz
-go mod init gofuzz
-go mod tidy
+GoFuzz is a simple yet powerful fuzzing tool written in Go, designed for web application security testing. With its concurrent execution model, GoFuzz can fuzz endpoints, parameters, and headers efficiently, making it a perfect companion for penetration testers and bug hunters.
+
+# ✨ Features:
+
+* Blazing Fast: Leverages Go's concurrency to run multiple requests in parallel.
+* Customizable: Supports custom headers, wordlists, and request bodies.
+* Flexible Filtering: Filter results by status codes or response contents.
+* Lightweight: Minimal dependencies and easy to use.
+
+# 🔧 Installation
+To get started, install GoFuzz using the following commands:
+
+## Clone the repository
+```git clone https://github.com/CharlesTheGreat77/GoFuzz```
+
+## Navigate to the project directory
+```cd GoFuzz```
+
+## Build and install
+```bash 
 go build -o gofuzz main.go
 sudo mv gofuzz /usr/local/bin
-gofuzz -h
 ```
 
-# Usage 🧠
-```bash
-gofuzz -h
+## Verify installation:
+
+```gofuzz -h```
+
+## 📖 How to Use
+
+Below is a summary of GoFuzz's options. Run gofuzz -h for details.
+
+```
 Usage of gofuzz:
+  -H string
+    	specify the file that contains headers [separated by line]
   -body string
     	specify POST request body (or file containing the body)
   -burp string
     	specify path to burp request
-  -custom-headers string
-    	specify the file that contains headers [separated by line]
   -h	show usage
   -method string
     	specify the request method [POST, GET] (default "GET")
-  -statuscode string
+  -s string
+    	specify a string to search for in response body 'Login Successful'
+  -sc string
     	specify a status code(s) to output
-  -threads int
+  -t int
     	specify thread count [default: 3] (default 3)
   -timeout int
     	specify timeout in seconds [default 5] (default 5)
-  -url string
+  -u string
     	specify the host url
-  -wordlist string
+  -w string
     	specify a wordlist used to fuzz
 ```
 
-# Examples 🦫
-Fuzz for Paths:
+# 🚀 Quick Start
+1. Fuzz Paths
+
+```gofuzz -u https://example.com/FUZZ -w paths.txt```
+
+2. Fuzz Query Parameters
+
+```gofuzz -u https://example.com/api?param=FUZZ -w params.txt```
+
+3. Fuzz POST Body
+
+```gofuzz -method POST -u https://example.com -body '{"key":"FUZZ"}' -w payloads.txt```
+
+3. Custom Headers	
+
+```gofuzz -u https://example.com/FUZZ -H headers.txt```
+
+4. Filter Status Codes	
+
+```gofuzz -u https://example.com/FUZZ -sc 200,403```
+
+5. "Grep" a string in respones body
+
 ```bash
-gofuzz -url https://example.com/FUZZ -wordlist list.txt -custom-headers headers.txt
+gofuzz -u https://example.com -sc -body body.json -s 'Login Successful'
 ```
 
-Fuzz parameters in URL:
-```bash
-gofuzz -url https://example.com/api/search=FUZZ -timeout 3 -threads 10 -wordlist list.txt
-```
-
-Fuzz with POST Requests:
-```bash
-gofuzz -url https://example.com/upload/file=FUZZ -method POST -body '{"test": "123456"}' -custom-headers headers.txt -wordlist list.txt
-```
-* To FUZZ the body of the post:
-    ```bash
-    gofuzz -url https://example.com/api/upload -method POST -body '{"payload": "FUZZ"}' -custom-headers headers.txt -wordlist list.txt
-    ```
-    * specify a file containing the body ```-body body.json/txt/ etc.```
-
-Filter by status code(s):
-```bash
-gofuzz -url https://example.com/FUZZ -wordlist list.txt -statuscode 500,200,403,303
-```
-
-BurpSuite Requests:
-One can copy and paste http requests to fuzz/intruder your hacking adventures.
-```bash
-gofuzz -burp request.txt -wordlist list.txt -threads 10
-```
-* Burpsuite uses HTTP/2, change to 1.1 as should be.
-```
-POST /product/stock HTTP/1.1
-Host: 0a7e00d204a2c01c80b71227002c00e3.web-security-academy.net
-Cookie: session=XV7TWpUFWZsOMadSpqUmllHnsyX7aozv
-Content-Length: 96
-Sec-Ch-Ua: "Chromium";v="127", "Not)A;Brand";v="99"
-Content-Type: application/x-www-form-urlencoded
-Accept-Language: en-US
-Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.6533.89 Safari/537.36
-Sec-Ch-Ua-Platform: "macOS"
-Accept: */*
-Origin: https://0a7e00d204a2c01c80b71227002c00e3.web-security-academy.net
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://0a7e00d204a2c01c80b71227002c00e3.web-security-academy.net/product?productId=1
-Accept-Encoding: gzip, deflate, br
-Priority: u=1, i
-
-stockApi=http%3A%2F%2F192.168.0.FUZZ%3A8080%2Fadmin
-```
-* Specifying FUZZ will be the position for which we try the wordlist on.
-
-## Video Example
+# 🎥 Demo Video
 [Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
+## ☕ Support
 
+Like what you see? Your support keeps projects like GoFuzz going!
+Buy Me a Coffee ☕
 
+## 💻 Contributing
 
+Contributions are always welcome! Whether it's reporting issues, suggesting features, or submitting pull requests, every bit helps improve GoFuzz.
 
-# Coffee ☕️
-If you enjoy this project or my other projects, It wouldn't hurt to grab me a <a href="https://buymeacoffee.com/doobthegoober">coffee</a>! 🙏
+## 📜 License
+
+GoFuzz is licensed under the MIT License. See the LICENSE file for more information.
+
+## ❤️ Acknowledgements
+
+Inspired by the amazing work of <a href="https://github.com/xmendez/wfuzz">wfuzz</a>
