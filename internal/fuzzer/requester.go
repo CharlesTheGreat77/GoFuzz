@@ -14,15 +14,20 @@ import (
 	"time"
 )
 
-func requestOutput(path string, search string, statuscode string, body string, modifiedBody string) {
-	if search == "" || strings.Contains(string(body), search) { // get paths that contain search string
+func requestOutput(path string, search string, statuscode string, body string, modifiedBody string, noSearch bool) {
+	if noSearch {
+		if !strings.Contains(string(body), search) {
+			fmt.Printf("Path: %-40s [%s] Length: %-10d\n", path, statuscode, len(body))
+			fmt.Printf("Request Body: %-40s\n\n", modifiedBody)
+		}
+	} else if search == "" || strings.Contains(string(body), search) { // get paths that contain search string
 		fmt.Printf("Path: %-40s [%s] Length: %-10d\n", path, statuscode, len(body))
 		fmt.Printf("Request Body: %-40s\n\n", modifiedBody)
 	}
 }
 
 // function to fuzz the parameters in a given wordlist based on position in url or body
-func GoRequest(method string, targetURL string, customHeaders []string, body string, wordlist []string, search string, maxConcurrentRequests int, timeout time.Duration, statusCodes []string) {
+func GoRequest(method string, targetURL string, customHeaders []string, body string, wordlist []string, search string, noSearch bool, maxConcurrentRequests int, timeout time.Duration, statusCodes []string) {
 	// configuration for each request
 	client := &http.Client{
 		Transport: &http.Transport{
@@ -121,11 +126,11 @@ func GoRequest(method string, targetURL string, customHeaders []string, body str
 				sc := fmt.Sprintf("%d", resp.StatusCode)
 				for _, code := range statusCodes {
 					if string(code) == sc {
-						requestOutput(pathAndQuery, search, sc, string(responseBody), modifiedBody) 
+						requestOutput(pathAndQuery, search, sc, string(responseBody), modifiedBody, noSearch)
 					}
 				}
 			} else if resp.StatusCode != 404 { // Ignore 404 responses
-				requestOutput(pathAndQuery, search, fmt.Sprintf("%d", resp.StatusCode), string(responseBody), modifiedBody)
+				requestOutput(pathAndQuery, search, fmt.Sprintf("%d", resp.StatusCode), string(responseBody), modifiedBody, noSearch)
 			}
 		}(word)
 	}
