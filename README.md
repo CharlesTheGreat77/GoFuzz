@@ -1,6 +1,6 @@
 # GoFuzz
 <div align="center">
-  <img src="assets/logo.png" alt="GoFuzz Logo" width="200" />
+  <img src="assets/logov2.png" alt="GoFuzz Logo" width="200" />
   <h1><strong>GoFuzz</strong></h1>
   <p>⚡ The lightweight, fast, and concurrent fuzzing tool for web application testing ⚡</p>
 </div>
