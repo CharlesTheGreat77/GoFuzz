@@ -42,6 +42,7 @@ Below is a summary of GoFuzz's options. Run gofuzz -h for details.
 Usage of gofuzz:
   -H string
     	specify the file that contains headers [separated by line]
+  -N	enable NOT searching for given string (used with search) [login failed]
   -body string
     	specify POST request body (or file containing the body)
   -burp string
@@ -87,8 +88,14 @@ Usage of gofuzz:
 5. "Grep" a string in respones body
 
 ```bash
-gofuzz -u https://example.com -sc -body body.json -s 'Login Successful'
+gofuzz -u https://example.com -sc 200,403 -body body.json -s 'Login Successful'
 ```
+
+```bash
+gofuzz -u https://example.com -body "username=admin&password=FUZZ&Redir=%2Flogin.html" -s 'Please enter a valid username/password' -N 
+```
+* Only shows requests that do NOT contain such string 😈
+
 
 # 🎥 Demo Video
 [Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
