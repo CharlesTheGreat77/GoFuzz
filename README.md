@@ -1,4 +1,3 @@
-# GoFuzz
 <div align="center">
   <img src="assets/logov2.png" alt="GoFuzz Logo" />
   <h1><strong>GoFuzz</strong></h1>
