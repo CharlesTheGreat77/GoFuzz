@@ -94,7 +94,7 @@ gofuzz -u https://example.com -sc 200,403 -body body.json -s 'Login Successful' 
 ```bash
 gofuzz -u https://example.com -body "username=admin&password=FUZZ&Redir=%2Flogin.html" -s 'Please enter a valid username/password' -N -w passwd.txt
 ```
-* Only shows requests that do NOT contain such string 😈 (*-n*)
+* Only shows requests that do NOT contain such string 😈 (*-N*)
 
 
 # 🎥 Demo Video
