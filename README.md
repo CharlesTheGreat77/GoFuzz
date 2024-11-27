@@ -155,7 +155,9 @@ Example usage:
 
 
 # 🎥 Demo Video
-[Recording](https://github.com/user-attachments/assets/4d053735-9290-45e8-963c-14eb9f9221ec)
+[Demo]https://github.com/user-attachments/assets/473517da-8419-4fd5-ad5d-2e7d613c05a4
+
+
 ## ☕ Support
 
 Like what you see? Your support keeps projects like GoFuzz going!
