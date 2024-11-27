@@ -155,7 +155,7 @@ Example usage:
 
 
 # 🎥 Demo Video
-[Demo]https://github.com/user-attachments/assets/473517da-8419-4fd5-ad5d-2e7d613c05a4
+[Demo](https://github.com/user-attachments/assets/473517da-8419-4fd5-ad5d-2e7d613c05a4)
 
 
 ## ☕ Support
