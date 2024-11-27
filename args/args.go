@@ -2,7 +2,6 @@ package args
 
 import (
 	"errors"
-	"fmt"
 	"gofuzz/utils"
 	"log"
 	"os"
