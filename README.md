@@ -18,10 +18,10 @@ GoFuzz is a simple yet powerful fuzzing tool written in Go, designed for web app
 To get started, install GoFuzz using the following commands:
 
 ## Clone the repository
-```git clone https://github.com/CharlesTheGreat77/GoFuzz```
-
-## Navigate to the project directory
-```cd GoFuzz```
+```
+git clone https://github.com/CharlesTheGreat77/GoFuzz
+cd GoFuzz
+```
 
 ## Build and install
 ```bash
