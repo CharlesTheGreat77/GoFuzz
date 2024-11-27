@@ -121,7 +121,7 @@ The openredirect command is used to FUZZ parameters in URL(s)/Headers.
   H [headers]         -> specify path to custom headers file (seperate by line)
   body                -> specify the body to FUZZ for a given POST request
   w [wordlist]        -> specify a wordlist used to FUZZ the given parameters
-  sc [status-code(s)] -> specify status code(s) [seperated by comma: 200,403]
+  c [status-code(s)] -> specify status code(s) [seperated by comma: 200,403]
   s [search]          -> specify a string to search/filter for in the response body
   N [NoSearch]        -> enable to output responses that do NOT contain the search string
   timeout             -> specify the time for timeout for each request
