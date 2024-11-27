@@ -24,7 +24,9 @@ To get started, install GoFuzz using the following commands:
 ```cd GoFuzz```
 
 ## Build and install
-```bash 
+```bash
+go mod init gofuzz
+go mod tidy
 go build -o gofuzz main.go
 sudo mv gofuzz /usr/local/bin
 ```
