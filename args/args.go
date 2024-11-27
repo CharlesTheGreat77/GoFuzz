@@ -43,8 +43,6 @@ func ParseFlags(cmd *cobra.Command, args *Fuzzy) {
 	cmd.Flags().IntVarP(&args.Timeout, "timeout", "T", 10, "specify a timeout per request")
 	cmd.Flags().IntVarP(&args.Threads, "threads", "t", 5, "specify the number of threads to use")
 
-	fmt.Println(args.WordlistPath)
-
 	if args.Method != "GET" {
 		if _, err := os.Stat(args.Body); !errors.Is(err, os.ErrNotExist) {
 			body, err := utils.ReadFile(args.Body)
