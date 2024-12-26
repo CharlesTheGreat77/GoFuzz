@@ -17,7 +17,6 @@ func GoTraverse(fuzzy args.Fuzzy, headers []string, proxies []string, wordlist [
 	semaphore := make(chan struct{}, fuzzy.Threads)
 
 	timeout := time.Duration(fuzzy.Timeout) * time.Second
-	client := goclient.GoClient(timeout, goclient.NewProxyRotator(proxies))
 
 	fmt.Println(fuzzy.URL)
 	for _, word := range wordlist {
@@ -27,6 +26,7 @@ func GoTraverse(fuzzy args.Fuzzy, headers []string, proxies []string, wordlist [
 		go func(word string) {
 			defer wg.Wait()
 			defer func() { <-semaphore }()
+			session := goclient.NewSession(timeout, goclient.NewProxyRotator(proxies))
 
 			for i := 0; i < 20; i++ { // max of 20 '../word' increments
 				traversalPath := strings.Repeat("../", i) + word
@@ -38,7 +38,7 @@ func GoTraverse(fuzzy args.Fuzzy, headers []string, proxies []string, wordlist [
 				}
 
 				//goclient.DebugRequest(req)
-				resp, err := client.Do(req)
+				resp, err := session.Client.Do(req)
 				if err != nil {
 					log.Printf("[-] Error sending request to %s\n -> Error: %v\n", url, err)
 				}

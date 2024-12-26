@@ -7,12 +7,17 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httputil"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
 )
+
+type Session struct {
+	Client *http.Client
+}
 
 type ProxyRotator struct {
 	proxies []string
@@ -40,11 +45,12 @@ func (pr *ProxyRotator) GetNextProxy() (*url.URL, error) {
 	return url.Parse(proxy)
 }
 
-// function to return a client with given http request configuration(s)
-// -> timeout value(s) and proxy rotation(s)
-func GoClient(timeout time.Duration, proxyRotator *ProxyRotator) *http.Client {
+func NewSession(timeout time.Duration, proxyRotator *ProxyRotator) *Session {
+	jar, _ := cookiejar.New(nil)
+
 	// configuration for each request
 	client := &http.Client{
+		Jar: jar,
 		Transport: &http.Transport{
 			TLSNextProto: make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
 			DialContext: (&net.Dialer{
@@ -61,9 +67,11 @@ func GoClient(timeout time.Duration, proxyRotator *ProxyRotator) *http.Client {
 			},
 		},
 		Timeout: timeout, // max time overall for the request
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse // prevent redirects, change as necessary
+		},
 	}
-
-	return client
+	return &Session{Client: client}
 }
 
 // function to set the HTTP request
@@ -72,14 +80,12 @@ func GoRequest(fuzzy args.Fuzzy, url string, headers []string, body string, word
 	var err error
 
 	if fuzzy.Method == "POST" { // if POST, set body, otherwise just set the url
-		req, err = http.NewRequest(fuzzy.Method, fuzzy.URL, bytes.NewReader([]byte(body)))
+		req, err = http.NewRequest(fuzzy.Method, url, bytes.NewReader([]byte(body)))
 		if err != nil {
 			return nil, err
 		}
 
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-		// default User-Agent
-		req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.1")
 		req.ContentLength = int64(len(body))
 	} else { // GET method... obviously..
 		req, err = http.NewRequest(fuzzy.Method, url, nil)
@@ -88,7 +94,7 @@ func GoRequest(fuzzy args.Fuzzy, url string, headers []string, body string, word
 		}
 	}
 	if err != nil {
-		log.Printf("Error creating request for %s: %v\n", fuzzy.URL, err)
+		log.Printf("Error creating request for %s: %v\n", url, err)
 		return nil, err
 	}
 
@@ -104,7 +110,7 @@ func GoRequest(fuzzy args.Fuzzy, url string, headers []string, body string, word
 
 	if len(headers) > 0 { // add custom headers to request
 		updatedHeaders := strings.Join(headers, "\n")
-		updatedHeaders = strings.Replace(updatedHeaders, "FUZZ", word, -1) // replace occurence of FUZZ with word in list
+		updatedHeaders = strings.Replace(updatedHeaders, "FUZZ", word, -1) // replace occurrence of FUZZ with word in list
 		headers := strings.Split(updatedHeaders, "\n")
 		for _, line := range headers {
 			header := strings.TrimSpace(line)
@@ -128,4 +134,13 @@ func DebugRequest(req *http.Request) {
 		return
 	}
 	log.Printf("Full Request:\n%s\n", string(requestDump))
+}
+
+func DebugResponse(resp *http.Response) {
+	responseDump, err := httputil.DumpResponse(resp, true)
+	if err != nil {
+		log.Printf("Error dumping response: %v\n", err)
+		return
+	}
+	log.Printf("Full Response:\n%s\n", string(responseDump))
 }

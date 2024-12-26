@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"gofuzz/args"
 	"gofuzz/internal/fuzz"
 	"gofuzz/utils"
@@ -78,8 +77,6 @@ var fuzzCmd = &cobra.Command{
 				log.Fatalf("[-] Error opening the file containing proxy(ies)%s\n -> Error: %v\n", fuzzy.Proxies, err)
 			}
 		}
-
-		fmt.Println(fuzzy)
 
 		fuzz.GoIntruder(fuzzy, wordlist, headers, proxies)
 	},

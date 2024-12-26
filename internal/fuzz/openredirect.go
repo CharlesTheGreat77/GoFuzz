@@ -14,7 +14,6 @@ import (
 // function to do a simple check for open redirect vulns. in a given param
 func GOpenRedirect(fuzzy args.Fuzzy, headers []string, proxies []string, wordlist []string) {
 	timeout := time.Duration(fuzzy.Timeout) * time.Second
-	client := goclient.GoClient(timeout, goclient.NewProxyRotator(proxies))
 	semaphore := make(chan struct{}, fuzzy.Threads)
 	var wg sync.WaitGroup
 
@@ -25,13 +24,14 @@ func GOpenRedirect(fuzzy args.Fuzzy, headers []string, proxies []string, wordlis
 		go func(word string) {
 			defer wg.Done()
 			defer func() { <-semaphore }()
+			session := goclient.NewSession(timeout, goclient.NewProxyRotator(proxies))
 
 			encodedWord := url.QueryEscape(word) // URL encode the occurence??
 			modifiedURL := strings.Replace(fuzzy.URL, "FUZZ", encodedWord, -1)
 
 			req, err := goclient.GoRequest(fuzzy, modifiedURL, headers, "", word)
 
-			resp, err := client.Do(req)
+			resp, err := session.Client.Do(req)
 			if err != nil {
 				log.Printf("[-] Error sending request to %s\n -> Error: %v\n", modifiedURL, err)
 				return

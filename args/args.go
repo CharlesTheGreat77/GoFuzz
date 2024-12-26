@@ -23,6 +23,7 @@ type Fuzzy struct {
 	NoSearch     bool
 	Proxies      string
 	Timeout      int
+	Delay        int
 	Threads      int
 }
 
@@ -40,6 +41,7 @@ func ParseFlags(cmd *cobra.Command, args *Fuzzy) {
 	cmd.Flags().BoolVarP(&args.NoSearch, "no-search", "N", false, "output responses that do NOT contain the search string")
 	cmd.Flags().StringVarP(&args.Proxies, "proxies", "p", "", "specify proxy(ies) (line-separated) [accepts file]")
 	cmd.Flags().IntVarP(&args.Timeout, "timeout", "T", 10, "specify a timeout per request")
+	cmd.Flags().IntVarP(&args.Delay, "delay", "d", 0, "specify a delay per request")
 	cmd.Flags().IntVarP(&args.Threads, "threads", "t", 5, "specify the number of threads to use")
 
 	if args.Method != "GET" {
