@@ -157,7 +157,11 @@ Example usage:
 
 
 # 🎥 Demo Video
-[Demo](https://github.com/user-attachments/assets/473517da-8419-4fd5-ad5d-2e7d613c05a4)
+[Path Traversal](https://github.com/user-attachments/assets/473517da-8419-4fd5-ad5d-2e7d613c05a4)
+
+[Fuzz](https://github.com/user-attachments/assets/73355992-60ab-4e74-bbce-58b5c00bcde4)
+
+
 
 
 ## ☕ Support
